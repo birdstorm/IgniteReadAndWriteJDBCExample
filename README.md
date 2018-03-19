@@ -4,7 +4,7 @@
 
 在`~/.bash_profile`或`~/.profile`中设置全局环境变量`$IGNITE_HOME`为binary地址
 
-在`$SPARK_HOME/spark-env.sh`的最后加入以下几行
+在`$SPARK_HOME/conf/spark-env.sh`的最后加入以下几行
 ```
 # Optionally set IGNITE_HOME here.
 # IGNITE_HOME=/path/to/ignite
@@ -31,7 +31,7 @@ $IGNITE_HOME/bin/ignite.sh src/main/resources/config/example-save-to-ignite.xml
 然后
 ```
 spark-submit \
-    --class com.pingcap.ignite.sparkjob.SaveToIgniteExample \
+    --class com.pingcap.ignite.examples.SaveToIgniteExample \
     --master local[2] \
     ./target/saveToIgnite-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
