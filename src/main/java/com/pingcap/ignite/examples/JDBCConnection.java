@@ -2,7 +2,8 @@ package com.pingcap.ignite.examples;
 
 public class JDBCConnection {
 
-  public static String igniteUrl = "jdbc:ignite:cfg://cache=data@file:////Users/birdstorm/Project/birdstorm/saveToIgnite/src/main/resources/config/example-save-to-ignite.xml";
+  public static String igniteCacheName = "data";
+  public static String igniteUrl = "jdbc:ignite:cfg://cache=" + igniteCacheName + "@file:////Users/birdstorm/Project/birdstorm/saveToIgnite/src/main/resources/config/example-save-to-ignite.xml";
   public static String igniteTableName = "data";
 
   public void work() {

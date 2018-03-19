@@ -15,13 +15,9 @@ import scala.collection.JavaConversions._
 
 class Job {
   def work(): Unit = {
-    val sharedRDD: IgniteRDD[String, Row] = igniteContext.fromCache("data")
-
-    println(">>> #1 Collecting values stored in Ignite Shared RDD...")
+    val sharedRDD: IgniteRDD[String, Row] = igniteContext.fromCache(igniteCacheName)
 
     sharedRDD.clear()
-
-    sharedRDD.take(10).foreach(println)
 
     val rowsRdd: RDD[Row] = sparkContext.parallelize(
       Seq(
@@ -36,12 +32,14 @@ class Job {
       StructType(StructField("id", IntegerType)::StructField("val", IntegerType)::Nil))
 
     //Save dataFrame
-    SparkIgniteCache.set(sparkContext, dfWrite, "data")
+    SparkIgniteCache.set(sparkContext, dfWrite, igniteCacheName)
+
+    println(">>> #1 Collecting values stored in Ignite Shared RDD...")
 
     sharedRDD.take(10).foreach(println)
 
     //Get dataFrame
-    val (schema, igniteRDD) = SparkIgniteCache.get(sparkContext, "data")
+    val (schema, igniteRDD) = SparkIgniteCache.get(sparkContext, igniteCacheName)
     val rdd1: RDD[Row] = igniteRDD.map(_._2) //Getting Row from (String, Row)
     val dfRead = sparkSession.createDataFrame(rdd1, schema)
 
@@ -49,12 +47,12 @@ class Job {
 
     dfRead.take(10).foreach(println)
 
-    dfRead.createOrReplaceTempView("data")
+    dfRead.createOrReplaceTempView(igniteTableName)
 
     println(">>> #1 Executing SQL query over Ignite Shared RDD...")
 
     // Execute a SQL query over the Ignite Shared RDD.
-    val df = sparkSession.sql("select id, val from data")
+    val df = sparkSession.sql("select id, val from " + igniteTableName)
 
     // Show ten rows from the result set.
     df.show()
@@ -120,6 +118,7 @@ object SaveToIgniteExample {
   // Defines spring cache Configuration path.
   private val CONFIG = SparkIgniteCache.CONFIG
 
+  val igniteCacheName: String = JDBCConnection.igniteCacheName
   val igniteUrl: String = JDBCConnection.igniteUrl
   val igniteTableName: String = JDBCConnection.igniteTableName
 
