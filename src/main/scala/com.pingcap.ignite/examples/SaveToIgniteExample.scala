@@ -27,7 +27,8 @@ class Job {
       Seq(
         Row(1, 2),
         Row(3, 4),
-        Row(5, 6)      )
+        Row(5, 6)
+      )
     )
 
     val dfWrite = sparkSession.createDataFrame(
@@ -48,10 +49,12 @@ class Job {
 
     dfRead.take(10).foreach(println)
 
+    dfRead.createOrReplaceTempView("data")
+
     println(">>> #1 Executing SQL query over Ignite Shared RDD...")
 
     // Execute a SQL query over the Ignite Shared RDD.
-    val df = sharedRDD.sql("select id, val from " + igniteTableName + " where id < 10 and val % 2 = 0")
+    val df = sparkSession.sql("select id, val from data")
 
     // Show ten rows from the result set.
     df.show()
@@ -129,8 +132,8 @@ object SaveToIgniteExample {
 
   def main(args: Array[String]): Unit = {
 
-    for (tableName <- igniteContext.ignite().cacheNames().toList) {
-      println("cache found:" + tableName)
+    for (cacheName <- igniteContext.ignite().cacheNames().toList) {
+      println("cache found:" + cacheName)
     }
 
 //    init()
