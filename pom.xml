@@ -13,7 +13,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <ignite.version>2.8.1</ignite.version>
         <scala.version>2.11</scala.version>
-        <mysql.connector.version>5.1.18</mysql.connector.version>
+        <mysql.connector.version>8.0.16</mysql.connector.version>
     </properties>
 
     <dependencies>
